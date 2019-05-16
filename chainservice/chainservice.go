@@ -302,7 +302,11 @@ func (cs *ChainService) HandleAction(_ context.Context, actPb *iotextypes.Action
 	if err := act.LoadProto(actPb); err != nil {
 		return err
 	}
-	return cs.actpool.Add(act)
+	if err := cs.actpool.Add(act); err != nil {
+		log.L().Error("Failed to add action.", zap.Error(err))
+		return err
+	}
+	return nil
 }
 
 // HandleBlock handles incoming block request.
